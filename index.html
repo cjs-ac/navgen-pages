@@ -29,9 +29,16 @@
   </head>
   <body>
     <h1>navgen</h1>
-    <input type="checkbox" id="useMils" />
-    <label for="useMils">Use Mils instead of Degrees</label>
-    <input type="number" id="magDeviation" placeholder="13" />
+    <label for="useMils">
+      <input type="checkbox" id="useMils" />
+      Use Mils instead of Degrees
+    </label>
     <label for="magDeviation">Magnetic Deviation</label>
+    <input type="number" id="magDeviation" />
+    <label for="numberOfPoints">Number of Points</label>
+    <input type="number" id="numberOfPoints" />
   </body>
+  <script>
+    document.getElementById('magDeviation').value = 13;
+  </script>
 </html>
