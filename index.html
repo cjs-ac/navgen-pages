@@ -2,8 +2,34 @@
 <html>
   <head>
     <title>navgen</title>
+    <script>
+      function getBearingNaturalRadians(point1, point2) {
+        var x1, y1, x2, y2;
+        x1 = parseInt(point1.substr(0, 5), 10);
+        y1 = parseInt(point1.substr(4, 5), 10);
+        x2 = parseInt(point2.substr(0, 5), 10);
+        y2 = parseInt(point2.substr(4, 5), 10);
+        return Math.atan2(y2 - y1, x2 - x1);
+      }
+      function getDistance(point1, point2) {
+        var x1, y1, x2, y2;
+        x1 = parseInt(point1.substr(0, 5), 10);
+        y1 = parseInt(point1.substr(4, 5), 10);
+        x2 = parseInt(point2.substr(0, 5), 10);
+        y2 = parseInt(point2.substr(4, 5), 10);
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+      }
+      function getBearingInDegrees(bearing) {
+        return -(bearing * 360 / Math.PI) + 90;
+      }
+      function getBearingInMils(bearing) {
+        return -(bearing * 6400 / Math.PI) + 1600;
+      }
+    </script>
   </head>
   <body>
     <h1>navgen</h1>
+    <input type="checkbox" name="useMils" />
+    <label for="useMils">Use Mils instead of Degrees</label>
   </body>
 </html>
