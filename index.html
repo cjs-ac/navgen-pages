@@ -3,6 +3,7 @@
   <head>
     <title>navgen</title>
     <script>
+      var noPoints = 2;
       function getBearingNaturalRadians(point1, point2) {
         var x1, y1, x2, y2;
         x1 = parseInt(point1.substr(0, 5), 10);
@@ -25,6 +26,21 @@
       function getBearingInMils(bearing) {
         return -(bearing * 6400 / Math.PI) + 1600;
       }
+      function changeNumberOfPoints() {
+        var Labels = document.getElementsByClassName("PointLabel");
+        var Inputs = document.getElementsByClassName("PointInput");
+        var i;
+        for (i = 0; i < Labels.length(); i++) {
+          if (ParseInt(substr(Labels.item(i), 10) > document.getElementById("numberOfPoints").value)) {
+            document.getElementById(Labels.item(i).id).outerHTML = "";
+          }
+        }
+        for (i = 0; i < Inputs.length(); i++) {
+          if (ParseInt(substr(Inputs.item(i), 10) > document.getElementById("numberOfPoints").value)) {
+            document.getElementById(Inputs.item(i).id).outerHTML = "";
+          }
+        }
+      }
     </script>
   </head>
   <body>
@@ -35,8 +51,10 @@
     </label>
     <label for="magDeviation">Magnetic Deviation</label>
     <input type="number" id="magDeviation" />
-    <label for="numberOfPoints">Number of Points</label>
+    <label for="numberOfPoints" onchange="changeNumberOfPoints()">Number of Points</label>
     <input type="number" id="numberOfPoints" />
+    <label for="inputPoint1" id="inputPoint1Label" class="PointLabel">Point 1</label>
+    <input type="text" id="inputPoint1" class="PointInput" />
   </body>
   <script>
     document.getElementById('magDeviation').value = 13;
