@@ -1,0 +1,3 @@
+[submodule "gridedit"]
+	path = gridedit
+	url = https://github.com/gridedit/gridedit.git
