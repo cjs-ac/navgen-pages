@@ -3,8 +3,33 @@
   <head>
     <title>navgen</title>
     <style>
+      :root {
+        --base03    :#002b36;
+        --base02    :#073642;
+        --base01    :#586e75;
+        --base00    :#657b83;
+        --base0     :#839496;
+        --base1     :#93a1a1;
+        --base2     :#eee8d5;
+        --base3     :#fdf6e3;
+        --yellow    :#b58900;
+        --orange    :#cb4b16;
+        --red       :#dc322f;
+        --magenta   :#d33682;
+        --violet    :#6c71c4;
+        --blue      :#268bd2;
+        --cyan      :#2aa198;
+        --green     :#859900;
+      }
+      body {
+        color: var(--base00);
+        background-color: var(--base3);
+      }
       label {
         display: block;
+      }
+      :invalid {
+        background-color: var(--red);
       }
     </style>
     <script>
@@ -63,7 +88,7 @@
       <input type="checkbox" id="useMils" />
       Use Mils instead of Degrees
     </label>
-    <label for="magDeviation">Magnetic Deviation</label>
+    <label for="magDeviation">Magnetic Deviation (degrees or mils)</label>
     <input type="number" id="magDeviation" />
     <div>
       <button onclick="addPoint()">Add Point</button>
@@ -75,6 +100,7 @@
       <label for="inputPoint2" id="inputPoint2Label" class="PointLabel">Point 2</label>
       <input type="text" id="inputPoint2" class="PointInput" pattern="[0-9]{10}" />
     </div>
+    <button>Calculate</button>
   </body>
   <script>
     var numberOfPoints = 2;
