@@ -27,14 +27,20 @@
         color: var(--base00);
         background-color: var(--base3);
       }
+      h1 {
+        margin-top: 0;
+      }
       label {
         display: block;
         color: var(--base01);
         margin-top: 10px;
       }
       input[type=text], input[type=number] {
+        color: var(--base00);
         background-color: var(--base2);
         border: 1px solid var(--base00);
+        width: 100%;
+        max-width: 200px;
       }
       button {
         background-color: var(--base2);
@@ -50,10 +56,10 @@
         border-collapse: collapse;
       }
       th, td {
-        margin: 2px;
+        padding: 5px;
       }
       td {
-        text-align: right;
+        text-align: center;
       }
       :invalid {
         color: var(--red);
@@ -148,11 +154,27 @@
           OutLeg.setAttribute("class", "tabLeg");
           OutRow.appendChild(OutLeg);
           var OutFrom = document.createElement("td");
-          OutFrom.appendChild(document.createTextNode(document.getElementById("inputPoint" + i).value));
+          var OutFromEastingsSix = document.createElement("b");
+          var OutFromNorthingsSix = document.createElement("b");
+          OutFromEastingsSix.appendChild(document.createTextNode(document.getElementById("inputPoint" + i).value.substr(0, 3)));
+          OutFromNorthingsSix.appendChild(document.createTextNode(document.getElementById("inputPoint" + i).value.substr(5, 3)));
+          OutFrom.appendChild(OutFromEastingsSix);
+          OutFrom.appendChild(document.createTextNode(document.getElementById("inputPoint" + i).value.substr(3, 2)));
+          OutFrom.appendChild(document.createElement("br"));
+          OutFrom.appendChild(OutFromNorthingsSix);
+          OutFrom.appendChild(document.createTextNode(document.getElementById("inputPoint" + i).value.substr(8, 2)));
           OutFrom.setAttribute("class", "tabFrom");
           OutRow.appendChild(OutFrom);
           var OutTo = document.createElement("td");
-          OutTo.appendChild(document.createTextNode(document.getElementById("inputPoint" + (i + 1)).value));
+          var OutToEastingsSix = document.createElement("b");
+          var OutToNorthingsSix = document.createElement("b");
+          OutToEastingsSix.appendChild(document.createTextNode(document.getElementById("inputPoint" + (i + 1)).value.substr(0, 3)));
+          OutToNorthingsSix.appendChild(document.createTextNode(document.getElementById("inputPoint" + (i + 1)).value.substr(5, 3)));
+          OutTo.appendChild(OutToEastingsSix);
+          OutTo.appendChild(document.createTextNode(document.getElementById("inputPoint" + (i + 1)).value.substr(3, 2)));
+          OutTo.appendChild(document.createElement("br"));
+          OutTo.appendChild(OutToNorthingsSix);
+          OutTo.appendChild(document.createTextNode(document.getElementById("inputPoint" + (i + 1)).value.substr(8, 2)));
           OutTo.setAttribute("class", "tabTo");
           OutRow.appendChild(OutTo);
           var OutGrid = document.createElement("td");
@@ -176,7 +198,7 @@
           OutDistance.setAttribute("class", "tabDistance");
           OutRow.appendChild(OutDistance);
           var OutPaces = document.createElement("td");
-          OutPaces.appendChild(document.createTextNode(Distance / 100 * document.getElementById("unitPaces").value));
+          OutPaces.appendChild(document.createTextNode(Math.round(Distance / 100 * document.getElementById("unitPaces").value)));
           OutPaces.setAttribute("class", "tabPaces");
           OutRow.appendChild(OutPaces);
           TableBody.appendChild(OutRow);
@@ -211,9 +233,9 @@
           <th>Leg</th>
           <th>From</th>
           <th>To</th>
-          <th>Grid Bearing</th>
-          <th>Magnetic Bearing</th>
-          <th>Distance</th>
+          <th>Grid</th>
+          <th>Mag.</th>
+          <th>Dist.</th>
           <th>Paces</th>
         </tr>
       </thead>
