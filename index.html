@@ -31,19 +31,28 @@
       function getBearingInMils(bearing) {
         return -(bearing * 6400 / Math.PI) + 1600;
       }
-      function changeNumberOfPoints() {
-        var Labels = document.getElementsByClassName("PointLabel");
-        var Inputs = document.getElementsByClassName("PointInput");
-        var i;
-        for (i = 0; i < Labels.length(); i++) {
-          if (ParseInt(substr(Labels.item(i), 10) > document.getElementById("numberOfPoints").value)) {
-            document.getElementById(Labels.item(i).id).outerHTML = "";
-          }
-        }
-        for (i = 0; i < Inputs.length(); i++) {
-          if (ParseInt(substr(Inputs.item(i), 10) > document.getElementById("numberOfPoints").value)) {
-            document.getElementById(Inputs.item(i).id).outerHTML = "";
-          }
+      function addPoint() {
+        numberOfPoints++;
+        var newLabel = document.createElement("label");
+        var newInput = document.createElement("input");
+        newLabel.setAttribute("for", "inputPoint" + numberOfPoints);
+        newLabel.setAttribute("id", "inputPoint" + numberOfPoints + "Label");
+        newLabel.setAttribute("class", "PointLabel");
+        newLabel.appendChild(document.createTextNode("Point " + numberOfPoints));
+        newInput.setAttribute("type", "text");
+        newInput.setAttribute("id", "inputPoint" + numberOfPoints);
+        newInput.setAttribute("class", "PointInput");
+        newInput.setAttribute("pattern", "[0-9]{10}");
+        document.getElementById("divPoints").appendChild(newLabel);
+        document.getElementById("divPoints").appendChild(newInput);
+      }
+      function removePoint() {
+        if (numberOfPoints > 2) {
+          var Label = document.getElementById("inputPoint" + numberOfPoints + "Label");
+          var Input = document.getElementById("inputPoint" + numberOfPoints);
+          Label.parentNode.removeChild(Label);
+          Input.parentNode.removeChild(Input);
+          numberOfPoints--;
         }
       }
     </script>
@@ -56,12 +65,19 @@
     </label>
     <label for="magDeviation">Magnetic Deviation</label>
     <input type="number" id="magDeviation" />
-    <label for="numberOfPoints" onchange="changeNumberOfPoints()">Number of Points</label>
-    <input type="number" id="numberOfPoints" min="2" />
-    <label for="inputPoint1" id="inputPoint1Label" class="PointLabel" pattern="[0-9]{10}">Point 1</label>
-    <input type="text" id="inputPoint1" class="PointInput" />
+    <div>
+      <button onclick="addPoint()">Add Point</button>
+      <button onclick="removePoint()">Remove Point</button>
+    </div>
+    <div id="divPoints">
+      <label for="inputPoint1" id="inputPoint1Label" class="PointLabel">Point 1</label>
+      <input type="text" id="inputPoint1" class="PointInput" pattern="[0-9]{10}" />
+      <label for="inputPoint2" id="inputPoint2Label" class="PointLabel">Point 2</label>
+      <input type="text" id="inputPoint2" class="PointInput" pattern="[0-9]{10}" />
+    </div>
   </body>
   <script>
+    var numberOfPoints = 2;
     document.getElementById('magDeviation').value = 13;
   </script>
 </html>
