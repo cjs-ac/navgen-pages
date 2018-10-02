@@ -28,33 +28,67 @@
       }
       label {
         display: block;
+        color: var(--base01);
+        margin-top: 10px;
+      }
+      input[type=text], input[type=number] {
+        background-color: var(--base2);
+        border: 1px solid var(--base00);
+      }
+      button {
+        background-color: var(--base2);
+        border: 1px solid var(--base00);
+        color: var(--base00);
+        margin: 10px 0px;
+      }
+      input[type=text]:valid {
+        color: var(--cyan);
+      }
+      table, th, td {
+        border: 1px solid var(--base1);
+        border-collapse: collapse;
+      }
+      th, td {
+        margin: 2px;
+      }
+      td {
+        text-align: right;
       }
       :invalid {
-        background-color: var(--red);
+        color: var(--red);
+      }
+      .tabGrid {
+        color: var(--orange);
+      }
+      .tabMag {
+        color: var(--magenta);
+      }
+      .tabDistance {
+        color: var(--blue);
       }
     </style>
     <script>
       function getBearingNaturalRadians(point1, point2) {
         var x1, y1, x2, y2;
         x1 = parseInt(point1.substr(0, 5), 10);
-        y1 = parseInt(point1.substr(4, 5), 10);
+        y1 = parseInt(point1.substr(5, 5), 10);
         x2 = parseInt(point2.substr(0, 5), 10);
-        y2 = parseInt(point2.substr(4, 5), 10);
-        return Math.atan2(y2 - y1, x2 - x1);
+        y2 = parseInt(point2.substr(5, 5), 10);
+        return Math.atan2(y2 - y1, x2 - x1) / 2;
       }
       function getDistance(point1, point2) {
         var x1, y1, x2, y2;
         x1 = parseInt(point1.substr(0, 5), 10);
-        y1 = parseInt(point1.substr(4, 5), 10);
+        y1 = parseInt(point1.substr(5, 5), 10);
         x2 = parseInt(point2.substr(0, 5), 10);
-        y2 = parseInt(point2.substr(4, 5), 10);
+        y2 = parseInt(point2.substr(5, 5), 10);
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
       }
       function getBearingInDegrees(bearing) {
-        return -(bearing * 360 / Math.PI) + 90;
+        return bearing * 360 / Math.PI;
       }
       function getBearingInMils(bearing) {
-        return -(bearing * 6400 / Math.PI) + 1600;
+        return bearing * 6400 / Math.PI;
       }
       function addPoint() {
         numberOfPoints++;
@@ -80,6 +114,16 @@
           numberOfPoints--;
         }
       }
+      function normaliseDegrees(bearing) {
+        bearing = -bearing + 90;
+        bearing = (bearing + 360) % 360;
+        return bearing;
+      }
+      function normaliseMils(bearing) {
+        bearing = -bearing + 1600;
+        bearing = (bearing + 6400) % 6400;
+        return bearing;
+      }
       function Calculate() {
         var TableBody = document.getElementById("TableBody");
         while (TableBody.firstChild) {
@@ -92,36 +136,48 @@
           Distance = getDistance(document.getElementById("inputPoint" + i).value, document.getElementById("inputPoint" + (i + 1)).value);
           if (document.getElementById("useMils").checked == true) {
             Bearing = getBearingInMils(Bearing);
-            while (Bearing < 0) {
-              Bearing += 6400;
-            }
           } else {
             Bearing = getBearingInDegrees(Bearing);
-            while (Bearing < 0) {
-              Bearing += 360;
-            }
           }
           Bearing = Math.round(Bearing);
           Distance = Math.round(Distance);
           var OutRow = document.createElement("tr");
           var OutLeg = document.createElement("td");
           OutLeg.appendChild(document.createTextNode(i));
+          OutLeg.setAttribute("class", "tabLeg");
           OutRow.appendChild(OutLeg);
           var OutFrom = document.createElement("td");
           OutFrom.appendChild(document.createTextNode(document.getElementById("inputPoint" + i).value));
+          OutFrom.setAttribute("class", "tabFrom");
           OutRow.appendChild(OutFrom);
           var OutTo = document.createElement("td");
           OutTo.appendChild(document.createTextNode(document.getElementById("inputPoint" + (i + 1)).value));
+          OutTo.setAttribute("class", "tabTo");
           OutRow.appendChild(OutTo);
           var OutGrid = document.createElement("td");
-          OutGrid.appendChild(document.createTextNode(Bearing));
+          if (document.getElementById("useMils").checked == true) {
+            OutGrid.appendChild(document.createTextNode(normaliseMils(Bearing)));
+          } else {
+            OutGrid.appendChild(document.createTextNode(normaliseDegrees(Bearing)));
+          }
+          OutGrid.setAttribute("class", "tabGrid");
           OutRow.appendChild(OutGrid);
           var OutMag = document.createElement("td");
-          OutMag.appendChild(document.createTextNode(Bearing - document.getElementById("magDeviation").value));
+          if (document.getElementById("useMils").checked == true) {
+            OutMag.appendChild(document.createTextNode(normaliseMils(Bearing - document.getElementById("magDeviation").value)));
+          } else {
+            OutMag.appendChild(document.createTextNode(normaliseDegrees(Bearing - document.getElementById("magDeviation").value)));
+          }
+          OutMag.setAttribute("class", "tabMag");
           OutRow.appendChild(OutMag);
           var OutDistance = document.createElement("td");
           OutDistance.appendChild(document.createTextNode(Distance));
+          OutDistance.setAttribute("class", "tabDistance");
           OutRow.appendChild(OutDistance);
+          var OutPaces = document.createElement("td");
+          OutPaces.appendChild(document.createTextNode(Distance / 100 * document.getElementById("unitPaces").value));
+          OutPaces.setAttribute("class", "tabPaces");
+          OutRow.appendChild(OutPaces);
           TableBody.appendChild(OutRow);
         }
       }
@@ -135,6 +191,8 @@
     </label>
     <label for="magDeviation">Magnetic Deviation (degrees or mils)</label>
     <input type="number" id="magDeviation" />
+    <label for="unitPaces">Paces per Hundred Metres</label>
+    <input type="number" id="unitPaces" />
     <div>
       <button onclick="addPoint()">Add Point</button>
       <button onclick="removePoint()">Remove Point</button>
@@ -155,13 +213,17 @@
           <th>Grid Bearing</th>
           <th>Magnetic Bearing</th>
           <th>Distance</th>
+          <th>Paces</th>
         </tr>
       </thead>
       <tbody id="TableBody" />
     </table>
+    <p><b>Source:</b> <a href="https://github.com/cjs-ac/navgen-pages">GitHub</a>.</p>
+    <p><b>Bugs:</b> <a href="https://github.com/cjs-ac/navgen-pages/issues">Issues Tracker</a>.</p>
   </body>
   <script>
     var numberOfPoints = 2;
     document.getElementById('magDeviation').value = 13;
+    document.getElementById('unitPaces').value = 120;
   </script>
 </html>
