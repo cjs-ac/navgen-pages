@@ -22,6 +22,7 @@
         --green     :#859900;
       }
       body {
+        font-family: sans-serif;
         color: var(--base00);
         background-color: var(--base3);
       }
@@ -33,7 +34,6 @@
       }
     </style>
     <script>
-      var noPoints = 2;
       function getBearingNaturalRadians(point1, point2) {
         var x1, y1, x2, y2;
         x1 = parseInt(point1.substr(0, 5), 10);
@@ -80,6 +80,51 @@
           numberOfPoints--;
         }
       }
+      function Calculate() {
+        var TableBody = document.getElementById("TableBody");
+        while (TableBody.firstChild) {
+          TableBody.removeChild(TableBody.firstChild);
+        }
+        var i;
+        for (i = 1; i < numberOfPoints; i++) {
+          var Bearing, Distance;
+          Bearing = getBearingNaturalRadians(document.getElementById("inputPoint" + i).value, document.getElementById("inputPoint" + (i + 1)).value);
+          Distance = getDistance(document.getElementById("inputPoint" + i).value, document.getElementById("inputPoint" + (i + 1)).value);
+          if (document.getElementById("useMils").checked == true) {
+            Bearing = getBearingInMils(Bearing);
+            while (Bearing < 0) {
+              Bearing += 6400;
+            }
+          } else {
+            Bearing = getBearingInDegrees(Bearing);
+            while (Bearing < 0) {
+              Bearing += 360;
+            }
+          }
+          Bearing = Math.round(Bearing);
+          Distance = Math.round(Distance);
+          var OutRow = document.createElement("tr");
+          var OutLeg = document.createElement("td");
+          OutLeg.appendChild(document.createTextNode(i));
+          OutRow.appendChild(OutLeg);
+          var OutFrom = document.createElement("td");
+          OutFrom.appendChild(document.createTextNode(document.getElementById("inputPoint" + i).value));
+          OutRow.appendChild(OutFrom);
+          var OutTo = document.createElement("td");
+          OutTo.appendChild(document.createTextNode(document.getElementById("inputPoint" + (i + 1)).value));
+          OutRow.appendChild(OutTo);
+          var OutGrid = document.createElement("td");
+          OutGrid.appendChild(document.createTextNode(Bearing));
+          OutRow.appendChild(OutGrid);
+          var OutMag = document.createElement("td");
+          OutMag.appendChild(document.createTextNode(Bearing - document.getElementById("magDeviation").value));
+          OutRow.appendChild(OutMag);
+          var OutDistance = document.createElement("td");
+          OutDistance.appendChild(document.createTextNode(Distance));
+          OutRow.appendChild(OutDistance);
+          TableBody.appendChild(OutRow);
+        }
+      }
     </script>
   </head>
   <body>
@@ -100,7 +145,20 @@
       <label for="inputPoint2" id="inputPoint2Label" class="PointLabel">Point 2</label>
       <input type="text" id="inputPoint2" class="PointInput" pattern="[0-9]{10}" />
     </div>
-    <button>Calculate</button>
+    <button onclick="Calculate()">Calculate</button>
+    <table>
+      <thead>
+        <tr>
+          <th>Leg</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Grid Bearing</th>
+          <th>Magnetic Bearing</th>
+          <th>Distance</th>
+        </tr>
+      </thead>
+      <tbody id="TableBody" />
+    </table>
   </body>
   <script>
     var numberOfPoints = 2;
